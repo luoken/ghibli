@@ -25,11 +25,13 @@ defmodule Ghibli.Vehicles do
             films: [],
             url: ""
 
+  @spec all() :: [__MODULE__.t()]
   def all do
     Fetcher.fetch("vehicles")
     |> Enum.map(fn vehicle -> struct(__MODULE__, vehicle) end)
   end
 
+  @spec get_by(id :: String.t()) :: __MODULE__.t()
   def get_by(id) do
     struct(__MODULE__, Fetcher.fetch("vehicles/#{id}"))
   end

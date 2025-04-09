@@ -1,25 +1,9 @@
 defmodule Ghibli.People do
   @moduledoc """
-  All logic surrounding getting location
+  All logic surrounding getting people
   """
 
   alias Ghibli.Fetcher
-
-  # {
-
-  #     "id": "ba924631-068e-4436-b6de-f3283fa848f0",
-  #     "name": "Ashitaka",
-  #     "gender": "male",
-  #     "age": "late teens",
-  #     "eye_color": "brown",
-  #     "hair_color": "brown",
-  #     "films":
-
-  #     [],
-  #     "species": "https://ghibliapi.vercel.app/species/af3910a6-429f-4c74-9ad5-dfe1c4aa04f2",
-  #     "url": "https://ghibliapi.vercel.app/people/ba924631-068e-4436-b6de-f3283fa848f0"
-
-  # },
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -43,11 +27,13 @@ defmodule Ghibli.People do
             species: "",
             url: ""
 
+  @spec all() :: [__MODULE__.t()]
   def all do
     Fetcher.fetch("people")
     |> Enum.map(fn person -> struct(__MODULE__, person) end)
   end
 
+  @spec get_by(id :: String.t()) :: __MODULE__.t()
   def get_by(id) do
     struct(__MODULE__, Fetcher.fetch("people/#{id}"))
   end

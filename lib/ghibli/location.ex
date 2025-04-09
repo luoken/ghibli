@@ -33,7 +33,7 @@ defmodule Ghibli.Location do
 
   @spec get_by(id :: String.t()) :: __MODULE__.t()
   def get_by(id) do
-    struct(__MODULE__, Fetcher.fetch("locations/#{id}"))
+    struct(__MODULE__, sanitize_location(Fetcher.fetch("locations/#{id}")))
   end
 
   @spec sanitize_location(map()) :: map()
