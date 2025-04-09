@@ -24,8 +24,9 @@ defmodule Ghibli.MixProject do
 
   defp deps do
     [
-      {:jason, "~> 1.2"},
-      {:httpoison, "~> 2.0"}
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:httpoison, "~> 2.0"},
+      {:jason, "~> 1.2"}
     ]
   end
 
