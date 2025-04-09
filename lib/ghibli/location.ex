@@ -5,27 +5,6 @@ defmodule Ghibli.Location do
 
   alias Ghibli.Fetcher
 
-  # "id": "11014596-71b0-4b3e-b8c0-1c4b15f28b9a",
-  # "name": "Irontown",
-  # "climate": "Continental",
-  # "terrain": "Mountain",
-  # "surface_water": "40",
-  # "residents":
-
-  # [
-
-  #     "https://ghibliapi.vercel.app/people/ba924631-068e-4436-b6de-f3283fa848f0"
-
-  # ],
-  # "films":
-
-  #     [
-  #         "https://ghibliapi.vercel.app/films/0440483e-ca0e-4120-8c50-4c8cd9b965d6"
-  #     ],
-  #     "url": "https://ghibliapi.vercel.app/locations/11014596-71b0-4b3e-b8c0-1c4b15f28b9a"
-
-  # }
-
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
@@ -46,12 +25,26 @@ defmodule Ghibli.Location do
             films: [],
             url: ""
 
+  @spec all() :: [__MODULE__.t()]
   def all do
     Fetcher.fetch("locations")
-    |> Enum.map(fn location -> struct(__MODULE__, location) end)
+    |> Enum.map(fn location -> struct(__MODULE__, sanitize_location(location)) end)
   end
 
+  @spec get_by(id :: String.t()) :: __MODULE__.t()
   def get_by(id) do
     struct(__MODULE__, Fetcher.fetch("locations/#{id}"))
   end
+
+  @spec sanitize_location(map()) :: map()
+  defp sanitize_location(%{climate: "TODO"} = location),
+    do: sanitize_location(%{location | climate: ""})
+
+  defp sanitize_location(%{terrain: "TODO"} = location),
+    do: sanitize_location(%{location | terrain: ""})
+
+  defp sanitize_location(%{residents: ["TODO"]} = location),
+    do: sanitize_location(%{location | residents: []})
+
+  defp sanitize_location(location), do: location
 end
