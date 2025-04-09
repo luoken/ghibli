@@ -1,5 +1,5 @@
 # Ghibli
-An Elixir wrapper for the [Ghibli Rest API] (https://ghibliapi.vercel.app/#).
+An Elixir wrapper for the [Ghibli Rest API](https://ghibliapi.vercel.app/#).
 
 
 ## Install
