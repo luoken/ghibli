@@ -1,6 +1,20 @@
 defmodule Ghibli.Vehicles do
   @moduledoc """
-  All logic surrounding getting location
+  Fetches Vehicles from API. The response from the API looks like this:
+  ```
+  {
+    "id": "923d70c9-8f15-4972-ad53-0128b261d628",
+    "name": "Sosuke's Boat",
+    "description": "A toy boat where Sosuke plays",
+    "vehicle_class": "Boat",
+    "length": "10",
+    "pilot": "https://ghibliapi.vercel.app/people/a10f64f3-e0b6-4a94-bf30-87ad8bc51607",
+    "films": [
+      "https://ghibliapi.vercel.app/films/758bf02e-3122-46e0-884e-67cf83df1786"
+    ],
+    "url": "https://ghibliapi.vercel.app/films/758bf02e-3122-46e0-884e-67cf83df1786"
+  }
+  ```
   """
 
   alias Ghibli.Fetcher
@@ -25,14 +39,21 @@ defmodule Ghibli.Vehicles do
             films: [],
             url: ""
 
-  @spec all() :: [__MODULE__.t()]
+  @spec all :: {:ok, [__MODULE__.t()]} | {:error, String.t()}
   def all do
     Fetcher.fetch("vehicles")
-    |> Enum.map(fn vehicle -> struct(__MODULE__, vehicle) end)
+    |> case do
+      {:ok, vehicles} -> {:ok, Enum.map(vehicles, fn vehicle -> struct(__MODULE__, vehicle) end)}
+      error -> error
+    end
   end
 
-  @spec get_by(id :: String.t()) :: __MODULE__.t()
+  @spec get_by(id :: String.t()) :: {:ok, __MODULE__.t()} | {:error, String.t()}
   def get_by(id) do
-    struct(__MODULE__, Fetcher.fetch("vehicles/#{id}"))
+    Fetcher.fetch("vehicles/#{id}")
+    |> case do
+      {:ok, vehicle} -> {:ok, struct(__MODULE__, vehicle)}
+      error -> error
+    end
   end
 end

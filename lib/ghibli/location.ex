@@ -1,6 +1,23 @@
 defmodule Ghibli.Location do
   @moduledoc """
-  All logic surrounding getting location
+  Houses the logic for fetching locations from the Studio Ghibli API. The shape of the
+  data looks as follows:
+  ```
+  {
+    "id": "11014596-71b0-4b3e-b8c0-1c4b15f28b9a",
+    "name": "Irontown",
+    "climate": "Continental",
+    "terrain": "Mountain",
+    "surface_water": "40",
+    "residents": [
+      "https://ghibliapi.vercel.app/people/ba924631-068e-4436-b6de-f3283fa848f0"
+    ],
+    "films": [
+      "https://ghibliapi.vercel.app/films/0440483e-ca0e-4120-8c50-4c8cd9b965d6"
+    ],
+    "url": "https://ghibliapi.vercel.app/locations/11014596-71b0-4b3e-b8c0-1c4b15f28b9a"
+  }
+  ```
   """
 
   alias Ghibli.Fetcher
@@ -25,15 +42,26 @@ defmodule Ghibli.Location do
             films: [],
             url: ""
 
-  @spec all() :: [__MODULE__.t()]
+  @spec all :: {:ok, [__MODULE__.t()]} | {:error, String.t()}
   def all do
     Fetcher.fetch("locations")
-    |> Enum.map(fn location -> struct(__MODULE__, sanitize_location(location)) end)
+    |> case do
+      {:ok, locations} ->
+        {:ok,
+         Enum.map(locations, fn location -> struct(__MODULE__, sanitize_location(location)) end)}
+
+      error ->
+        error
+    end
   end
 
-  @spec get_by(id :: String.t()) :: __MODULE__.t()
+  @spec get_by(id :: String.t()) :: {:ok, __MODULE__.t()} | {:error, String.t()}
   def get_by(id) do
-    struct(__MODULE__, sanitize_location(Fetcher.fetch("locations/#{id}")))
+    Fetcher.fetch("locations/#{id}")
+    |> case do
+      {:ok, location} -> {:ok, struct(__MODULE__, sanitize_location(location))}
+      error -> error
+    end
   end
 
   @spec sanitize_location(map()) :: map()
