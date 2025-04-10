@@ -1,5 +1,12 @@
 # Ghibli
-An Elixir wrapper for the [Ghibli Rest API](https://ghibliapi.vercel.app/#).
+An Elixir wrapper for the [Ghibli Rest API](https://ghibliapi.vercel.app/#). The package
+does make an make some adjustments to the data. It does use HTTPoison and Jason for
+fetching and parsing. Response from Jason is returned with atom keys which is then fed
+into a struct to make sure all the data is valid.
+
+All "TODO"s from the response are removed and empty strings are placed instead.
+
+Species fields `eye_colors` and `hair_colors` are converted from String to Lists.
 
 
 ## Install
